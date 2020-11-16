@@ -1,8 +1,18 @@
 # Import Flask modules
-from flask import Flask, request, render_template
+from flask import Flask, redirect, request, render_template,session, url_for
 from flaskext.mysql import MySQL
 # Create an object named app
-app = Flask(__name__) 
+class User:
+    def_init_(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.passwor = password
+    def_repr_(sself):
+        return f'<User: {self.username}>'
+users = []    
+users.append(User(id=1, username='Anthony', password='password'))    
+app = Flask(__name__)
+app.secret_key = 'somesecretkeythatonlyishouldknow' 
 db_endpoint = open("/home/ec2-user/dbserver.endpoint", 'r', encoding='UTF-8') 
 # Configure mysql database
 app.config['MYSQL_DATABASE_HOST'] = db_endpoint.readline().strip()
@@ -105,6 +115,19 @@ def delete_person(name):
 # Write a function named `find_records` which finds phone records by keyword using `GET` and `POST` methods,
 # using template files named `index.html` given under `templates` folder
 # and assign to the static route of ('/')
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        session.pop('user_id', None)
+        username = request.form['username']
+        password = request.form['password']
+        
+        user = [x for x in users if x.username == username][0]
+        if user and user.password == password:
+            session['user_id'] = user.id
+            return redirect(url_for('index'))
+        return redirect(url_for('login'))
+    return render_template('login.html')
 @app.route('/', methods=['GET', 'POST'])
 def find_records():
     if request.method == 'POST':
