@@ -7,8 +7,8 @@ db_endpoint = open("/home/ec2-user/dbserver.endpoint", 'r', encoding='UTF-8')
 # Configure mysql database
 app.config['MYSQL_DATABASE_HOST'] = db_endpoint.readline().strip()
 app.config['MYSQL_DATABASE_USER'] = 'admin'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'Baurjan_1'
-app.config['MYSQL_DATABASE_DB'] = 'phonebook'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'Comp5331'
+app.config['MYSQL_DATABASE_DB'] = 'directory'
 app.config['MYSQL_DATABASE_PORT'] = 3306
 db_endpoint.close()
 mysql = MySQL()
@@ -19,10 +19,10 @@ cursor = connection.cursor()
 # Write a function named `init_todo_db` which initializes the todo db
 # Create P table within sqlite db and populate with sample data
 # Execute the code below only once.
-def init_phonebook_db():
-    drop_table = 'DROP TABLE IF EXISTS phonebook.phonebook;'
-    phonebook_table = """
-    CREATE TABLE phonebook(
+def init_directory_db():
+    drop_table = 'DROP TABLE IF EXISTS directory.directory;'
+    directory_table = """
+    CREATE TABLE directory(
     id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     number VARCHAR(100) NOT NULL,
@@ -30,21 +30,21 @@ def init_phonebook_db():
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     """
     data = """
-    INSERT INTO phonebook.phonebook (name, number)
+    INSERT INTO directory.directory (name, number)
     VALUES
         ("Fatma", "1234567890"),
         ("Ummuhan", "67854"),
         ("Sibel", "876543554");
     """
     cursor.execute(drop_table)
-    cursor.execute(phonebook_table)
+    cursor.execute(directory_table)
     cursor.execute(data)
-# Write a function named `find_persons` which finds persons' record using the keyword from the phonebook table in the db,
+# Write a function named `find_persons` which finds persons' record using the keyword from the directory table in the db,
 # and returns result as list of dictionary 
 # `[{'id': 1, 'name':'XXXX', 'number': 'XXXXXX'}]`.
 def find_persons(keyword):
     query = f"""
-    SELECT * FROM phonebook WHERE name like '%{keyword.strip().lower()}%';
+    SELECT * FROM directory WHERE name like '%{keyword.strip().lower()}%';
     """
     cursor.execute(query)
     result = cursor.fetchall()
@@ -52,56 +52,56 @@ def find_persons(keyword):
     if len(persons) == 0:
         persons = [{'name':'No Result', 'number':'No Result'}]
     return persons
-# Write a function named `insert_person` which inserts person into the phonebook table in the db,
+# Write a function named `insert_person` which inserts person into the directory table in the db,
 # and returns text info about result of the operation
 def insert_person(name, number):
     query = f"""
-    SELECT * FROM phonebook WHERE name like '{name.strip().lower()}';
+    SELECT * FROM directory WHERE name like '{name.strip().lower()}';
     """
     cursor.execute(query)
     row = cursor.fetchone()
     if row is not None:
         return f'Person with name {row[1].title()} already exits.'
     insert = f"""
-    INSERT INTO phonebook (name, number)
+    INSERT INTO directory (name, number)
     VALUES ('{name.strip().lower()}', '{number}');
     """
     cursor.execute(insert)
     result = cursor.fetchall()
-    return f'Person {name.strip().title()} added to Phonebook successfully'
-# Write a function named `update_person` which updates the person's record in the phonebook table,
+    return f'Person {name.strip().title()} added to directory successfully'
+# Write a function named `update_person` which updates the person's record in the directory table,
 # and returns text info about result of the operation
 def update_person(name, number):
     query = f"""
-    SELECT * FROM phonebook WHERE name like '{name.strip().lower()}';
+    SELECT * FROM directory WHERE name like '{name.strip().lower()}';
     """
     cursor.execute(query)
     row = cursor.fetchone()
     if row is None:
         return f'Person with name {name.strip().title()} does not exist.'
     update = f"""
-    UPDATE phonebook
+    UPDATE directory
     SET name='{row[1]}', number = '{number}'
     WHERE id= {row[0]};
     """
     cursor.execute(update)
     return f'Phone record of {name.strip().title()} is updated successfully'
-# Write a function named `delete_person` which deletes person record from the phonebook table in the db,
+# Write a function named `delete_person` which deletes person record from the directory table in the db,
 # and returns returns text info about result of the operation
 def delete_person(name):
     query = f"""
-    SELECT * FROM phonebook WHERE name like '{name.strip().lower()}';
+    SELECT * FROM directory WHERE name like '{name.strip().lower()}';
     """
     cursor.execute(query)
     row = cursor.fetchone()
     if row is None:
         return f'Person with name {name.strip().title()} does not exist, no need to delete.'
     delete = f"""
-    DELETE FROM phonebook
+    DELETE FROM directory
     WHERE id= {row[0]};
     """
     cursor.execute(delete)
-    return f'Phone record of {name.strip().title()} is deleted from the phonebook successfully'
+    return f'Phone record of {name.strip().title()} is deleted from the directory successfully'
 # Write a function named `find_records` which finds phone records by keyword using `GET` and `POST` methods,
 # using template files named `index.html` given under `templates` folder
 # and assign to the static route of ('/')
@@ -166,6 +166,6 @@ def delete_record():
         return render_template('delete.html', show_result=False, not_valid=False, developer_name='DevOpsTeam')
 # Add a statement to run the Flask application which can be reached from any host on port 80.
 if __name__== '__main__':
-    # init_phonebook_db()
+    # init_directory_db()
     # app.run(debug=True)
     app.run(host='0.0.0.0', port=80) 
