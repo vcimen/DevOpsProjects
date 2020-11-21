@@ -1,8 +1,8 @@
 AWSTemplateFormatVersion: 2010-09-09
 
 Description: |
-  CloudFormation Template for Phonebook Application.
-  Phonebook is deployed ALB, Auto-scaling Group with RDS.
+  CloudFormation Template for directory Application.
+  Directory is deployed ALB, Auto-scaling Group with RDS.
 
 Parameters:
   KeyName:
@@ -81,6 +81,7 @@ Resources:
                   #! /bin/bash
                   yum update -y
                   yum install python3 -y
+                  yum install mysql -y
                   pip3 install flask
                   pip3 install flask_mysql
                   echo "${MyDBURI}" > /home/ec2-user/dbserver.endpoint
@@ -88,7 +89,7 @@ Resources:
                   curl -s --create-dirs -o "/home/ec2-user/templates/index.html" -L "$FOLDER"templates/index.html
                   curl -s --create-dirs -o "/home/ec2-user/templates/add-update.html" -L "$FOLDER"templates/add-update.html
                   curl -s --create-dirs -o "/home/ec2-user/templates/delete.html" -L "$FOLDER"templates/delete.html
-                  curl -s --create-dirs -o "/home/ec2-user/app.py" -L "$FOLDER"phonebook-app.py
+                  curl -s --create-dirs -o "/home/ec2-user/app.py" -L "$FOLDER"directory-app.py
                   python3 /home/ec2-user/app.py
                 - MyDBURI: !GetAtt MyDatabaseServer.Endpoint.Address
   WebServerTG:
@@ -148,11 +149,11 @@ Resources:
       AutoMinorVersionUpgrade: true
       BackupRetentionPeriod: 0
       DBInstanceClass: db.t2.micro #required
-      DBInstanceIdentifier: phonebook-app-db
-      DBName: phonebook
+      DBInstanceIdentifier: directory-app-db
+      DBName: directory
       Engine: MySQL
       EngineVersion: 8.0.19
-      MasterUserPassword: Baurjan_1
+      MasterUserPassword: Comp5331
       MasterUsername: admin
       MonitoringInterval: 0
       MultiAZ: false
@@ -166,4 +167,4 @@ Outputs:
     Value: !Sub 
       - http://${ALBAddress}
       - ALBAddress: !GetAtt ApplicationLoadBalancer.DNSName
-    Description: Phonebook Application Load Balancer URL
+    Description: directory Application Load Balancer URL
