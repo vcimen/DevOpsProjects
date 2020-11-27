@@ -143,7 +143,7 @@ def login():
         return redirect(url_for('login'))
 
     return render_template('login.html')
-@app.route('/index',methods=['GET', 'POST'])
+@app.route('/index')
 def index():
     if not g.user:
         return redirect(url_for('login'))
