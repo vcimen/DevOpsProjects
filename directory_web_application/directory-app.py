@@ -1,20 +1,6 @@
 # Import Flask modules
 from flask import Flask, request, render_template,g,redirect,session,url_for
 from flaskext.mysql import MySQL
-class User:
-    def __init__(self, id, username, password):
-        self.id = id
-        self.username = username
-        self.password = password
-
-    def __repr__(self):
-        return f'<User: {self.username}>'
-
-users = []
-users.append(User(id=1, username='admin', password='admin'))
-users.append(User(id=2, username='Sinan', password='secret'))
-users.append(User(id=3, username='USare', password='somethingsimple'))
-# Create an object named app
 app = Flask(__name__) 
 app.secret_key = 'somesecretkeythatonlyishouldknow'
 db_endpoint = open("/home/ec2-user/dbserver.endpoint", 'r', encoding='UTF-8') 
@@ -33,6 +19,19 @@ cursor = connection.cursor()
 # Write a function named `init_todo_db` which initializes the todo db
 # Create P table within sqlite db and populate with sample data
 # Execute the code below only once.
+class User:
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
+
+    def __repr__(self):
+        return f'<User: {self.username}>'
+
+users = []
+users.append(User(id=1, username='admin', password='admin'))
+users.append(User(id=2, username='Sinan', password='secret'))
+users.append(User(id=3, username='USare', password='somethingsimple'))
 def init_directory_db():
     drop_table = 'DROP TABLE IF EXISTS directory.directory;'
     directory_table = """
@@ -144,8 +143,14 @@ def login():
         return redirect(url_for('login'))
 
     return render_template('login.html')
+@app.route('/index')
+def index():
+    if not g.user:
+        return redirect(url_for('login'))
+
+    return render_template('index.html')    
     
-@app.route('/index', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def find_records():
     if request.method == 'POST':
         keyword = request.form['username']
@@ -206,6 +211,6 @@ def delete_record():
         return render_template('delete.html', show_result=False, not_valid=False, developer_name='DevOpsTeam')
 # Add a statement to run the Flask application which can be reached from any host on port 80.
 if __name__== '__main__':
-    # init_directory_db()
+    init_directory_db()
     # app.run(debug=True)
     app.run(host='0.0.0.0', port=80) 
