@@ -129,7 +129,7 @@ def before_request():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'GET':
+    if request.method == 'POST':
         session.pop('user_id', None)
 
         username = request.form['username']
