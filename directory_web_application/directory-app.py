@@ -1,8 +1,8 @@
 # Import Flask modules
-from flask import Flask, request, render_template,g,redirect,session,url_for
+from flask import Flask, request, render_template
 from flaskext.mysql import MySQL
+# Create an object named app
 app = Flask(__name__) 
-app.secret_key = 'somesecretkeythatonlyishouldknow'
 db_endpoint = open("/home/ec2-user/dbserver.endpoint", 'r', encoding='UTF-8') 
 # Configure mysql database
 app.config['MYSQL_DATABASE_HOST'] = db_endpoint.readline().strip()
@@ -19,19 +19,6 @@ cursor = connection.cursor()
 # Write a function named `init_todo_db` which initializes the todo db
 # Create P table within sqlite db and populate with sample data
 # Execute the code below only once.
-class User:
-    def __init__(self, id, username, password):
-        self.id = id
-        self.username = username
-        self.password = password
-
-    def __repr__(self):
-        return f'<User: {self.username}>'
-
-users = []
-users.append(User(id=1, username='admin', password='admin'))
-users.append(User(id=2, username='Sinan', password='secret'))
-users.append(User(id=3, username='USare', password='somethingsimple'))
 def init_directory_db():
     drop_table = 'DROP TABLE IF EXISTS directory.directory;'
     directory_table = """
@@ -118,38 +105,6 @@ def delete_person(name):
 # Write a function named `find_records` which finds phone records by keyword using `GET` and `POST` methods,
 # using template files named `index.html` given under `templates` folder
 # and assign to the static route of ('/')
-@app.before_request
-def before_request():
-    g.user = None
-
-    if 'user_id' in session:
-        user = [x for x in users if x.id == session['user_id']][0]
-        g.user = user
-        
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        session.pop('user_id', None)
-
-        username = request.form['username']
-        password = request.form['password']
-        
-        user = [x for x in users if x.username == username][0]
-        if user and user.password == password:
-            session['user_id'] = user.id
-            return redirect(url_for('index'))
-
-        return redirect(url_for('login'))
-
-    return render_template('login.html')
-@app.route('/')
-def index():
-    if not g.user:
-        return redirect(url_for('login'))
-
-    return render_template('index.html')    
-    
 @app.route('/', methods=['GET', 'POST'])
 def find_records():
     if request.method == 'POST':
@@ -211,6 +166,6 @@ def delete_record():
         return render_template('delete.html', show_result=False, not_valid=False, developer_name='DevOpsTeam')
 # Add a statement to run the Flask application which can be reached from any host on port 80.
 if __name__== '__main__':
-    #init_directory_db()
+    # init_directory_db()
     # app.run(debug=True)
     app.run(host='0.0.0.0', port=80) 
