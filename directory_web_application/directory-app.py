@@ -30,8 +30,8 @@ class User:
 
 users = []
 users.append(User(id=1, username='admin', password='admin'))
-users.append(User(id=2, username='Sinan', password='secret'))
-users.append(User(id=3, username='USare', password='somethingsimple'))
+users.append(User(id=2, username='Ali', password='secret'))
+users.append(User(id=3, username='Vahit', password='simple'))
 def init_directory_db():
     drop_table = 'DROP TABLE IF EXISTS directory.directory;'
     directory_table = """
