@@ -32,9 +32,9 @@ def init_address_book_db():
     data = """
     INSERT INTO address_book.address_book (name, number)
     VALUES
-        ("James", "1234567890"),
-        ("John", "67854"),
-        ("Ali", "876543554");
+        ("Fatma", "1234567890"),
+        ("Ummuhan", "67854"),
+        ("Sibel", "876543554");
     """
     cursor.execute(drop_table)
     cursor.execute(address_book_table)
