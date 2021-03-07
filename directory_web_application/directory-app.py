@@ -19,19 +19,7 @@ cursor = connection.cursor()
 # Write a function named `init_todo_db` which initializes the todo db
 # Create P table within sqlite db and populate with sample data
 # Execute the code below only once.
-class User:
-    def __init__(self, id, username, password):
-        self.id = id
-        self.username = username
-        self.password = password
 
-    def __repr__(self):
-        return f'<User: {self.username}>'
-
-users = []
-users.append(User(id=1, username='admin', password='admin'))
-users.append(User(id=2, username='Ali', password='secret'))
-users.append(User(id=3, username='Vahit', password='simple'))
 def init_directory_db():
     drop_table = 'DROP TABLE IF EXISTS directory.directory;'
     directory_table = """
@@ -118,46 +106,15 @@ def delete_person(name):
 # Write a function named `find_records` which finds phone records by keyword using `GET` and `POST` methods,
 # using template files named `index.html` given under `templates` folder
 # and assign to the static route of ('/')
-@app.before_request
-def before_request():
-    g.user = None
-
-    if 'user_id' in session:
-        user = [x for x in users if x.id == session['user_id']][0]
-        g.user = user
-        
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        session.pop('user_id', None)
-
-        username = request.form['username']
-        password = request.form['password']
-        
-        user = [x for x in users if x.username == username][0]
-        if user and user.password == password:
-            session['user_id'] = user.id
-            return redirect(url_for('index'))
-
-        return redirect(url_for('login'))
-
-    return render_template('login.html')
-@app.route('/')
-def index():
-    if not g.user:
-        return redirect(url_for('login'))
-
-    return render_template('index.html')    
     
 @app.route('/', methods=['GET', 'POST'])
 def find_records():
     if request.method == 'POST':
         keyword = request.form['username']
         persons = find_persons(keyword)
-        return render_template('index.html', persons=persons, keyword=keyword, show_result=True, developer_name='UC')
+        return render_template('index.html', persons=persons, keyword=keyword, show_result=True, developer_name='U&C')
     else:
-        return render_template('index.html', show_result=False, developer_name='UC')
+        return render_template('index.html', show_result=False, developer_name='U&C')
 # Write a function named `add_record` which inserts new record to the database using `GET` and `POST` methods,
 # using template files named `add-update.html` given under `templates` folder
 # and assign to the static route of ('add')
@@ -166,18 +123,18 @@ def add_record():
     if request.method == 'POST':
         name = request.form['username']
         if name is None or name.strip() == "":
-            return render_template('add-update.html', not_valid=True, message='Invalid input: Name can not be empty', show_result=False, action_name='save', developer_name='UC')
+            return render_template('add-update.html', not_valid=True, message='Invalid input: Name can not be empty', show_result=False, action_name='save', developer_name='U&C')
         elif name.isdecimal():
-            return render_template('add-update.html', not_valid=True, message='Invalid input: Name of person should be text', show_result=False, action_name='save', developer_name='UC')
+            return render_template('add-update.html', not_valid=True, message='Invalid input: Name of person should be text', show_result=False, action_name='save', developer_name='U&C')
         phone_number = request.form['phonenumber']
         if phone_number is None or phone_number.strip() == "":
-            return render_template('add-update.html', not_valid=True, message='Invalid input: Phone number can not be empty', show_result=False, action_name='save', developer_name='UC')
+            return render_template('add-update.html', not_valid=True, message='Invalid input: Phone number can not be empty', show_result=False, action_name='save', developer_name='U&C')
         elif not phone_number.isdecimal():
-            return render_template('add-update.html', not_valid=True, message='Invalid input: Phone number should be in numeric format', show_result=False, action_name='save', developer_name='UC')
+            return render_template('add-update.html', not_valid=True, message='Invalid input: Phone number should be in numeric format', show_result=False, action_name='save', developer_name='U&C')
         result = insert_person(name, phone_number)
-        return render_template('add-update.html', show_result=True, result=result, not_valid=False, action_name='save', developer_name='UC')
+        return render_template('add-update.html', show_result=True, result=result, not_valid=False, action_name='save', developer_name='U&C')
     else:
-        return render_template('add-update.html', show_result=False, not_valid=False, action_name='save', developer_name='UC')
+        return render_template('add-update.html', show_result=False, not_valid=False, action_name='save', developer_name='U&C')
 # Write a function named `update_record` which updates the record in the db using `GET` and `POST` methods,
 # using template files named `add-update.html` given under `templates` folder
 # and assign to the static route of ('update')
@@ -186,16 +143,16 @@ def update_record():
     if request.method == 'POST':
         name = request.form['username']
         if name is None or name.strip() == "":
-            return render_template('add-update.html', not_valid=True, message='Invalid input: Name can not be empty', show_result=False, action_name='update', developer_name='UC')
+            return render_template('add-update.html', not_valid=True, message='Invalid input: Name can not be empty', show_result=False, action_name='update', developer_name='U&C')
         phone_number = request.form['phonenumber']
         if phone_number is None or phone_number.strip() == "":
-            return render_template('add-update.html', not_valid=True, message='Invalid input: Phone number can not be empty', show_result=False, action_name='update', developer_name='UC')
+            return render_template('add-update.html', not_valid=True, message='Invalid input: Phone number can not be empty', show_result=False, action_name='update', developer_name='U&C')
         elif not phone_number.isdecimal():
-            return render_template('add-update.html', not_valid=True, message='Invalid input: Phone number should be in numeric format', show_result=False, action_name='update', developer_name='UC')
+            return render_template('add-update.html', not_valid=True, message='Invalid input: Phone number should be in numeric format', show_result=False, action_name='update', developer_name='U&C')
         result = update_person(name, phone_number)
-        return render_template('add-update.html', show_result=True, result=result, not_valid=False, action_name='update', developer_name='UC')
+        return render_template('add-update.html', show_result=True, result=result, not_valid=False, action_name='update', developer_name='U&C')
     else:
-        return render_template('add-update.html', show_result=False, not_valid=False, action_name='update', developer_name='UC')
+        return render_template('add-update.html', show_result=False, not_valid=False, action_name='update', developer_name='U&C')
 # Write a function named `delete_record` which updates the record in the db using `GET` and `POST` methods,
 # using template files named `delete.html` given under `templates` folder
 # and assign to the static route of ('delete')
@@ -204,11 +161,11 @@ def delete_record():
     if request.method == 'POST':
         name = request.form['username']
         if name is None or name.strip() == "":
-            return render_template('delete.html', not_valid=True, message='Invalid input: Name can not be empty', show_result=False, developer_name='UC')
+            return render_template('delete.html', not_valid=True, message='Invalid input: Name can not be empty', show_result=False, developer_name='U&C')
         result = delete_person(name)
-        return render_template('delete.html', show_result=True, result=result, not_valid=False, developer_name='UC')
+        return render_template('delete.html', show_result=True, result=result, not_valid=False, developer_name='U&C')
     else:
-        return render_template('delete.html', show_result=False, not_valid=False, developer_name='UC')
+        return render_template('delete.html', show_result=False, not_valid=False, developer_name='U&C')
 # Add a statement to run the Flask application which can be reached from any host on port 80.
 if __name__== '__main__':
     #init_directory_db()
