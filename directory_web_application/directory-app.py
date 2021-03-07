@@ -45,9 +45,9 @@ def init_directory_db():
     data = """
     INSERT INTO directory.directory (name, number)
     VALUES
-        ("Fatma", "1234567890"),
-        ("Ummuhan", "67854"),
-        ("Sibel", "876543554");
+        ("James", "1234567890"),
+        ("John", "67854"),
+        ("Matt", "876543554");
     """
     cursor.execute(drop_table)
     cursor.execute(directory_table)
