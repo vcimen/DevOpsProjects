@@ -4,7 +4,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
   <title>Capstone Project</title>
   <style>
     body {
@@ -63,21 +62,24 @@
 
 <body>
 
+  
+
   <h1>Project : Address Book Application</h1>
   <h2>Welcome to {{developer_name}}'s Address Book Application</h2>
-  <h2 class="sectionnote">Enter a name to search</h2>
+  <h2 class="sectionnote">Enter a name and phone number to {{action_name}}</h2>
 
-  <form action="#" method="post">
+  <form action="/update/{{person.id}}" method="post">
+    <input type="hidden" name="id" id="personId" value="{{person.id}}">
     <label for="name"><b>Name:</b></label>
-    <input placeholder="Keyword" type="text" name="username" id="name">
-    <button type="submit">Search</button>
+    <input placeholder="Full Name" type="text" name="name" id="name" required value="{{person.name}}">
+    <label for="number"><b>Phone Number:</b></label>
+    <input placeholder="1234567890" name="phonenumber" id="number" required value="{{person.number}}"/>
+    <button type="submit">{{ action_name.title() }}</button>
+    {% if not_valid %}
+    <p class="warning"><b>{{ message }}</b></p>
+    {% endif %}
     {% if show_result %}
-        <h1>Result for '{{ keyword }}' </h1>
-            <ul> 
-            {% for person in persons %}
-            <li>Name: <b>{{ person['name'] }} </b>  ---- Phone Number: <b>{{ person['number'] }}</b></li>
-            {% endfor %}
-            </ul>
+      <h2 class="sectionnote"> {{ result }} </h1>
     {% endif %}
   </form>
 
@@ -85,3 +87,4 @@
 </body>
 
 </html>
+    
