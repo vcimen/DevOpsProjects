@@ -3,14 +3,14 @@ from flask import Flask, request, render_template,g,redirect,session,url_for
 from flaskext.mysql import MySQL
 app = Flask(__name__) 
 app.secret_key = 'somesecretkeythatonlyishouldknow'
-#db_endpoint = open("/home/ec2-user/dbserver.endpoint", 'r', encoding='UTF-8') 
+db_endpoint = open("/home/ec2-user/dbserver.endpoint", 'r', encoding='UTF-8') 
 # Configure mysql database
-app.config['MYSQL_DATABASE_HOST'] = 'address-book-app-db.cjwejqo3nbep.us-east-1.rds.amazonaws.com' #db_endpoint.readline().strip()
+app.config['MYSQL_DATABASE_HOST'] = db_endpoint.readline().strip()
 app.config['MYSQL_DATABASE_USER'] = 'admin'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'spring2021'
 app.config['MYSQL_DATABASE_DB'] = 'address'
 app.config['MYSQL_DATABASE_PORT'] = 3306
-#db_endpoint.close()
+db_endpoint.close()
 mysql = MySQL()
 mysql.init_app(app)
 connection = mysql.connect()
