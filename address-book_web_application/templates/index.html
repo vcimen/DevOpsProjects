@@ -57,8 +57,67 @@
     .footnote{
       color: rgba(0, 0, 255, 0.712);
     }
+    
+    /*table {*/
+    /*  width: 100%;*/
+    /*  margin-top:20px;*/
+    /*}*/
+    /*table, th, td {*/
+    /*  border: 1px solid black;*/
+    /*}*/
+    #users {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#users td, #users th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#users tr:nth-child(even){background-color: #f2f2f2;}
+
+#users tr:hover {background-color: #ddd;}
+
+#users th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+    
+    .actions{
+      border: 1px solid gray;
+    background-color: antiquewhite;
+    margin: 5px;
+    padding: 5px;
+    text-decoration: none;
+    color: darkred;
+    }
+    
+    .edit-user {
+      border: 1px solid #b13636;
+    padding: 5px;
+    background-color: lightyellow;
+    border-radius: 5px;
+    margin: 3px;
+    text-decoration: none;
+    color: #0b1488;
+    }
+    .delete-user {
+      border: 1px solid #b13636;
+    padding: 5px;
+    background-color: lightyellow;
+    border-radius: 5px;
+    margin: 3px;
+    text-decoration: none;
+    color: red;
+    }
 
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -71,15 +130,34 @@
     <label for="name"><b>Name:</b></label>
     <input placeholder="Keyword" type="text" name="username" id="name">
     <button type="submit">Search</button>
-    {% if show_result %}
-        <h1>Result for '{{ keyword }}' </h1>
-            <ul> 
-            {% for person in persons %}
-            <li>Name: <b>{{ person['name'] }} </b>  ---- Phone Number: <b>{{ person['number'] }}</b></li>
-            {% endfor %}
-            </ul>
-    {% endif %}
+    
   </form>
+  
+  {% if show_result %}
+      
+      <div style="margin-top:10px;margin-bottom:10px">
+        <a class="actions" href="/add"><i class="fa fa-user-plus" aria-hidden="true"></i> New User</a>
+      <a class="actions" href="/"><i class="fa fa-users" aria-hidden="true"></i> Show All Users</a>
+      </div>
+       <table id=users>
+         <tr>
+           <th>Name</th>
+           <th>Phone</th>
+           <th>Actions</th>
+         </tr>
+         {% for person in persons %}
+         <tr>
+           <td><b>{{ person['name'] }} </b></td>
+           <td><b>{{ person['number'] }}</td>
+           <td style="width: 30%;">
+             <a href="/update/{{person.id}}" class="edit-user"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
+             
+             <a href="/delete/{{person.id}}" class="delete-user"><i class="fa fa-times" aria-hidden="true"></i> Delete</a>
+           </td>
+         </tr>
+         {% endfor %}
+       </table>
+    {% endif %}
 
   <p class="footnote"><i>This app is developed in Python by <b>{{ developer_name }}</b> and deployed with Flask on AWS Cloud using Clouldformation Service.</i></p>
 </body>
