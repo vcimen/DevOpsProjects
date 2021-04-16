@@ -27,15 +27,16 @@ def init_address_db():
     id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     number VARCHAR(100) NOT NULL,
+    address VARCHAR(250),
     PRIMARY KEY (id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     """
     data = """
-    INSERT INTO address.address (name, number)
+    INSERT INTO address.address (name, number, address)
     VALUES
-        ("James", "1234567890"),
-        ("John", "67854"),
-        ("Matt", "876543554");
+        ("James", "1234567890", "123 Main Street, Manhattan, NY 10010"),
+        ("John", "67854", "456 Main Street, Manhattan, NY 10010"),
+        ("Matt", "876543554", "789 Main Street, Manhattan, NY 10010");
     """
     cursor.execute(drop_table)
     cursor.execute(address_table)
@@ -83,15 +84,15 @@ def insert_person(name, number):
     if row is not None:
         return f'Person with name {row[1].title()} already exits.'
     insert = f"""
-    INSERT INTO address (name, number)
-    VALUES ('{name.strip().lower()}', '{number}');
+    INSERT INTO address (name, number, address)
+    VALUES ('{name.strip().lower()}', '{number}', '{address}');
     """
     cursor.execute(insert)
     result = cursor.fetchall()
     return f'Person {name.strip().title()} added to address successfully'
 # Write a function named `update_person` which updates the person's record in the address table,
 # and returns text info about result of the operation
-def update_person(id, name, number):
+def update_person(id, name, number, address):
     query = f"""
     SELECT * FROM address WHERE id={id};
     """
@@ -101,7 +102,7 @@ def update_person(id, name, number):
         return f'Person with name {name.strip().title()} does not exist.'
     update = f"""
     UPDATE address
-    SET name='{name}', number = '{number}'
+    SET name='{name}', number = '{number}', address = '{address}'
     WHERE id= {row[0]};
     """
     try:
@@ -153,7 +154,8 @@ def add_record():
             return render_template('add-update.html', not_valid=True, message='Invalid input: Phone number can not be empty', show_result=False, action_name='save', developer_name='U&C')
         elif not phone_number.isdecimal():
             return render_template('add-update.html', not_valid=True, message='Invalid input: Phone number should be in numeric format', show_result=False, action_name='save', developer_name='U&C')
-        result = insert_person(name, phone_number)
+         
+        result = insert_person(name, phone_number, address)
         return redirect('/')
         # return render_template('add-update.html', show_result=True, result=result, not_valid=False, action_name='save', developer_name='U&C')
     else:
@@ -173,7 +175,7 @@ def update_record(id):
             return render_template('update.html', not_valid=True, message='Invalid input: Phone number can not be empty', show_result=False, action_name='update', developer_name='U&C')
         elif not phone_number.isdecimal():
             return render_template('update.html', not_valid=True, message='Invalid input: Phone number should be in numeric format', show_result=False, action_name='update', developer_name='U&C')
-        result = update_person(id, name, phone_number)
+        result = update_person(id, name, phone_number, address)
         return redirect('/')
     else:
         person = get_person_byId(id)
@@ -199,7 +201,7 @@ def delete_record(id):
     #     return render_template('delete.html', show_result=False, not_valid=False, developer_name='U&C')
 # Add a statement to run the Flask application which can be reached from any host on port 80.
 if __name__== '__main__':
-    init_address_db()
+    #init_address_db()
     # app.run(debug=True)
     # init_persons()
     app.run(host='0.0.0.0', port=80) 
